@@ -29,8 +29,7 @@ app.get( "/spin", ( req, res ) => {
   if ( result.reward )
     user.coins += result.reward.coins
 
-  const json = JSON.stringify( { ...result , user } )
-  res.send( json )
+  res.json( { ...result , user } )
 } )
 
 app.get( "/debug", ( req, res ) => {

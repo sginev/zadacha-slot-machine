@@ -8,7 +8,9 @@ const app = express()
 
 app.use( session( {
   secret: SETTINGS_SLOTS.user.session.secret,
-  cookie: { maxAge: SETTINGS_SLOTS.user.session.cookieMaxAge }
+  cookie: { maxAge: SETTINGS_SLOTS.user.session.cookieMaxAge },
+  saveUninitialized: false ,
+  resave: false ,
 } ) )
 
 app.use( ( req, res ) => {

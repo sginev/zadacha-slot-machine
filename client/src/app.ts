@@ -5,7 +5,7 @@ const config = {
   title: "Задача Slots",
   width: 800,
   height: 1280,
-  backgroundColor: "#18216D"
+  backgroundColor: "#18416D"
 }
 
 export class SlotsGame extends Phaser.Game {

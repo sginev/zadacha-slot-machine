@@ -1,8 +1,8 @@
 # Slots TODO
 
 [x] Project setup
-[ ] Server - logic and api
-[ ] Server - session management
+[x] Server - logic and api
+[x] Server - session and user management
 [ ] Client - Phaser init
 [ ] Client - Full view
 [ ] Client - Server connector

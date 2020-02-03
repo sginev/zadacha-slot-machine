@@ -10,8 +10,7 @@ app.get( "/", (req, res) => {
 
   for ( let i = 0 ; i < 100 ; i++ ) {
     const result = makeSpinResult()
-    //console.log( result )
-    s += `</br> <b>${ result.match }</b> - ${ result.symbols.map( o => o.name ) }`
+    s += `</br> <b>${ result.match }</b> - ${ result.symbols.map( o => ` - ${ o.name } - ` ) }`
   }
 
   res.send( s )
@@ -19,7 +18,6 @@ app.get( "/", (req, res) => {
 
 const PORT = process.env.PORT || CONFIG.port
 app.listen( PORT, () => console.log( `Slots API Server listening on port ${ PORT }` ) )
-
 
 //// -- //// -- ////
 
@@ -31,6 +29,7 @@ interface SymbolData {
   icon : string
   weight : number
   reward : SpinReward
+  index? : number
 }
 
 interface SpinReward {
@@ -98,20 +97,20 @@ const makeSpinResult = () : SpinResult =>
 
 const simpleShuffle = ( array:ThreeSymbols ) => array.sort( () => Math.random() - 0.5 )
 
-const getWeightedRandomItem = <T>( list:T[], weight:number[] ) : T => 
+const getWeightedRandomItem = <T>( list:T[], weights:number[] ) : T => 
 {
-  let total_weight = weight.reduce( ( prev, cur, i, arr ) => prev + cur )
-    
+  let total_weight = weights.reduce( ( prev, cur, i, arr ) => prev + cur )
+
   let random_num = Math.random() * total_weight
   let weight_sum = 0
 
   for ( let i = 0; i < list.length; i++ ) 
   {
-    weight_sum += weight[i]
+    weight_sum += weights[i]
     weight_sum = +weight_sum.toFixed(2)
       
     if ( random_num <= weight_sum ) {
-      return list[ i ]
+      return { index : i, ...list[ i ] }
     }
   }
 }

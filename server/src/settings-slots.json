@@ -10,28 +10,28 @@
             "icon" : "icon_1.png" ,
             "rewardMessage" : "Grape job!" ,
             "reward" : { "coins" : 100 } ,
-            "weight" : 898989
+            "weight" : 550000
         } , 
         {
             "name" : "Lemons",
             "icon" : "icon_2.png" ,
             "rewardMessage" : "Sublime!" ,
             "reward" : { "coins" : 777 } ,
-            "weight" : 100000
+            "weight" : 400000
         } , 
         {
             "name" : "Strawberries",
             "icon" : "icon_3.png" ,
             "rewardMessage" : "Berry good!" ,
             "reward" : { "coins" : 10001 } ,
-            "weight" : 1000
+            "weight" : 49000
         } , 
         {
             "name" : "Cherries",
             "icon" : "icon_4.png" ,
             "rewardMessage" : "Eat, drink and be cherry!" ,
             "reward" : { "coins" : 636363 } ,
-            "weight" : 10
+            "weight" : 999
         } , 
         {
             "name" : "Melons",

@@ -1,12 +1,30 @@
-import SERVER_CONFIG from "./settings-server.json"
+import SETTINGS_SERVER from "./settings-server.json"
+import SETTINGS_SLOTS from "./settings-slots.json"
 import express from "express"
 import slots from "./slots"
+import session from "express-session"
 
 const app = express()
 
+app.use( session( { secret: 'casualinus-slotus-zadachus', cookie: { maxAge: 6000 } } ) )
+
+class UserData {
+  spins = 0
+  constructor ( public coins : number ) {}
+}
+
 app.get( "/spin", ( req, res ) => {
+  if ( ! req.session.user )
+    req.session.user = new UserData( SETTINGS_SLOTS.initialUserCoins )
+
+  const user = req.session.user as UserData
+  user.spins++
+  user.coins--
+
   const result = slots.makeSpinResult()
-  const json = JSON.stringify( result )
+  result.reward && ( user.coins += result.reward.coins )
+
+  const json = JSON.stringify( { ...result , user } )
   res.send( json )
 } )
 
@@ -19,5 +37,5 @@ app.get( "/debug", ( req, res ) => {
   res.send( s )
 } )
 
-const PORT = process.env.PORT || SERVER_CONFIG.port
+const PORT = process.env.PORT || SETTINGS_SERVER.port
 app.listen( PORT, () => console.log( `Slots API Server listening on port ${ PORT }` ) )

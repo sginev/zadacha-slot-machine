@@ -1,4 +1,5 @@
 {
+    "initialUserCoins" : 100 ,
     "weights" : {
         "trio" : 1 ,
         "pair" : 13 ,

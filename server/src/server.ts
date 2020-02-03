@@ -6,7 +6,11 @@ import session from "express-session"
 
 const app = express()
 
-app.use( session( { secret: 'casualinus-slotus-zadachus', cookie: { maxAge: 6000 } } ) )
+const sessionSettings = {
+  secret: SETTINGS_SLOTS.user.session.secret,
+  cookie: { maxAge: SETTINGS_SLOTS.user.session.cookieMaxAge }
+}
+app.use( session( sessionSettings ) )
 
 class UserData {
   spins = 0
@@ -15,7 +19,7 @@ class UserData {
 
 app.get( "/spin", ( req, res ) => {
   if ( ! req.session.user )
-    req.session.user = new UserData( SETTINGS_SLOTS.initialUserCoins )
+    req.session.user = new UserData( SETTINGS_SLOTS.user.initialCoins )
 
   const user = req.session.user as UserData
   user.spins++

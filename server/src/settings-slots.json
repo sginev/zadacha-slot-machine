@@ -1,5 +1,11 @@
 {
-    "initialUserCoins" : 100 ,
+    "user" : {
+        "initialCoins" : 100 ,
+        "session" : {
+            "secret" : "casualinus-slotus-zadachus" ,
+            "cookieMaxAge" : 60000 
+        }
+    } ,
     "weights" : {
         "trio" : 1 ,
         "pair" : 13 ,

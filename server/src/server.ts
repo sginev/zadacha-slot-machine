@@ -6,11 +6,10 @@ import session from "express-session"
 
 const app = express()
 
-const sessionSettings = {
+app.use( session( {
   secret: SETTINGS_SLOTS.user.session.secret,
   cookie: { maxAge: SETTINGS_SLOTS.user.session.cookieMaxAge }
-}
-app.use( session( sessionSettings ) )
+} ) )
 
 app.use( ( req, res ) => {
   if ( ! req.session.user ) {
@@ -41,15 +40,6 @@ app.get( "/spin", ( req, res ) => {
     user.coins += result.reward.coins
 
   res.json( { ...result , user } )
-} )
-
-app.get( "/debug", ( req, res ) => {
-  let s = ''
-  for ( let i = 0 ; i < 100 ; i++ ) {
-    const result = slots.makeSpinResult()
-    s += `</br> <b>${ result.match }</b> - ${ result.symbols.map( o => ` - ${ o } - ` ) }`
-  }
-  res.send( s )
 } )
 
 const PORT = process.env.PORT || SETTINGS_SERVER.port

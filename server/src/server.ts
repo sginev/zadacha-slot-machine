@@ -12,15 +12,26 @@ const sessionSettings = {
 }
 app.use( session( sessionSettings ) )
 
+app.use( ( req, res ) => {
+  if ( ! req.session.user ) {
+    req.session.user = new UserData( SETTINGS_SLOTS.user.initialCoins )
+  }
+  req.next()
+} )
+
 class UserData {
   spins = 0
   constructor ( public coins : number ) {}
 }
 
-app.get( "/spin", ( req, res ) => {
-  if ( ! req.session.user )
-    req.session.user = new UserData( SETTINGS_SLOTS.user.initialCoins )
+app.get( "/init", ( req, res ) => {
+  res.json( { 
+    symbols : SETTINGS_SLOTS.symbols , 
+    user : req.session.user
+  } )
+} )
 
+app.get( "/spin", ( req, res ) => {
   const user = req.session.user as UserData
   user.spins++
   user.coins--

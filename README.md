@@ -1,5 +1,5 @@
 
-# Task Preview
+### Task Preview
 
 [![Preview-GIF](https://sginev.github.io/zadacha-slot-machine/preview.gif)](https://sginev.github.io/zadacha-slot-machine/preview.gif)
 

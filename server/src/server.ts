@@ -21,24 +21,6 @@ app.listen( PORT, () => console.log( `Slots API Server listening on port ${PORT}
 
 //// -- //// -- ////
 
-/**
- * 
- interface SlotMachineSettings {
-   weights : { 
-     'none' : number , 
-     'pair' : number , 
-     'trio' : number , 
-   }
-   symbols : {
-     name : string
-     icon : string
-     weight : number
-     reward : {
-       coins : number
-     }
-   }[]
- }
- */
 
 interface SymbolData {
   name : string
@@ -58,12 +40,12 @@ interface SpinResult {
 
 const makeSpinResult = () => 
 {
-  const symbols = SLOTS.symbols.slice() 
-
-  const getRandomSymbol = () : SymbolData => 
-    getRandomItem( symbols, symbols.map( symbol => symbol.weight ) )
-
-  // const settings = SLOTS as SlotMachineSettings
+  const symbols = SLOTS.symbols.slice()
+  const getRandomSymbol = () : SymbolData => {
+    const i = getRandomItem( symbols, symbols.map( ( symbol, i ) => i ) )
+    symbols.splice( i, 1 )
+    return symbols[ i ]
+  }
 
   const match = getRandomItem( Object.keys( SLOTS.weights ), Object.values( SLOTS.weights ) )
 

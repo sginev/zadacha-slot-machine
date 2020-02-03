@@ -7,7 +7,7 @@
     "scripts": {
         "start": "npm run build:live",
         "build": "tsc -p .",
-        "build:live": "nodemon --watch '*.ts' --exec 'ts-node' src/server.ts"
+        "build:live": "nodemon --watch '*.ts' --watch '*.json' --exec 'ts-node' src/server.ts"
     },
     "dependencies": {
         "express": "^4.17.1",

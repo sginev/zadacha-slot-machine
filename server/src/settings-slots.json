@@ -1,0 +1,44 @@
+{
+    "weights" : {
+        "trio" : 1 ,
+        "pair" : 13 ,
+        "none" : 86
+    } ,
+    "symbols" : [
+        {
+            "name" : "Grapes",
+            "icon" : "icon_1.png" ,
+            "rewardMessage" : "Grape job!" ,
+            "reward" : { "coins" : 100 } ,
+            "weight" : 898989
+        } , 
+        {
+            "name" : "Lemons",
+            "icon" : "icon_2.png" ,
+            "rewardMessage" : "Sublime!" ,
+            "reward" : { "coins" : 777 } ,
+            "weight" : 100000
+        } , 
+        {
+            "name" : "Strawberries",
+            "icon" : "icon_3.png" ,
+            "rewardMessage" : "Berry good!" ,
+            "reward" : { "coins" : 10001 } ,
+            "weight" : 1000
+        } , 
+        {
+            "name" : "Cherries",
+            "icon" : "icon_4.png" ,
+            "rewardMessage" : "Eat, drink and be cherry!" ,
+            "reward" : { "coins" : 636363 } ,
+            "weight" : 10
+        } , 
+        {
+            "name" : "Melons",
+            "icon" : "icon_5.png" ,
+            "rewardMessage" : "That was one in a melon!" ,
+            "reward" : { "coins" : 1000000 } ,
+            "weight" : 1
+        }
+    ]
+}

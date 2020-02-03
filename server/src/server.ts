@@ -22,7 +22,8 @@ app.get( "/spin", ( req, res ) => {
   user.coins--
 
   const result = slots.makeSpinResult()
-  result.reward && ( user.coins += result.reward.coins )
+  if ( result.reward )
+    user.coins += result.reward.coins
 
   const json = JSON.stringify( { ...result , user } )
   res.send( json )

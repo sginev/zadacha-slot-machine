@@ -9,18 +9,22 @@ app.get( "/", (req, res) => {
   let s = ''
 
   for ( let i = 0 ; i < 100 ; i++ ) {
-    s += '</br>' + makeSpinResult()
+    const result = makeSpinResult()
+    //console.log( result )
+    s += `</br> <b>${ result.match }</b> - ${ result.symbols.map( o => o.name ) }`
   }
 
   res.send( s )
 } )
 
 const PORT = process.env.PORT || CONFIG.port
-app.listen( PORT, () => console.log( `Slots API Server listening on port ${PORT}` ) )
+app.listen( PORT, () => console.log( `Slots API Server listening on port ${ PORT }` ) )
 
 
 //// -- //// -- ////
 
+type MatchType = 'trio' | 'pair' | 'none'
+type ThreeSymbols = [SymbolData,SymbolData,SymbolData]
 
 interface SymbolData {
   name : string
@@ -34,32 +38,48 @@ interface SpinReward {
 }
 
 interface SpinResult {
+  match : MatchType
+  symbols : ThreeSymbols
   reward : SpinReward
 }
 
 
-const makeSpinResult = () => 
+const makeSpinResult = () : SpinResult => 
 {
   const symbols = SLOTS.symbols.slice()
+
   const getRandomSymbol = () : SymbolData => {
-    const i = getRandomItem( symbols, symbols.map( ( symbol, i ) => i ) )
+    const i = getWeightedRandomItem( symbols.map( ( symbol, i:number ) => i ), 
+                                     symbols.map( symbol => symbol.weight ) )
     symbols.splice( i, 1 )
     return symbols[ i ]
   }
 
-  const match = getRandomItem( Object.keys( SLOTS.weights ), Object.values( SLOTS.weights ) )
+  const match = getWeightedRandomItem( Object.keys( SLOTS.weights ), 
+                                       Object.values( SLOTS.weights ) ) as MatchType
+
+  const result = { match }
 
   if ( match === 'none' )
   {
-    return 
+    let symbol_1 = getRandomSymbol()
+    let symbol_2 = getRandomSymbol()
+    let symbol_3 = getRandomSymbol()
+    return {
+      ...result, 
+      symbols : simpleShuffle( [ symbol_1, symbol_2, symbol_3 ] ) ,
+      reward : null ,
+    }
   }
 
   if ( match === 'pair' )
   {
     let symbol_1 = getRandomSymbol()    
+    let symbol_2 = getRandomSymbol()    
     return {
-      symbols : [ symbol_1, symbol_1, symbol_1 ] ,
-      reward : symbol_1.reward
+      ...result, 
+      symbols : simpleShuffle( [ symbol_1, symbol_1, symbol_2 ] ) ,
+      reward : null ,
     }
   }
 
@@ -67,15 +87,18 @@ const makeSpinResult = () =>
   {
     let symbol = getRandomSymbol()    
     return {
+      ...result,
       symbols : [ symbol, symbol, symbol ] ,
-      reward : symbol.reward
+      reward : symbol.reward ,
     }
   }
 
   throw new Error( `Invalid configuration - unrecognized match type ${ match }` )
 }
 
-const getRandomItem = ( list, weight ) => 
+const simpleShuffle = ( array:ThreeSymbols ) => array.sort( () => Math.random() - 0.5 )
+
+const getWeightedRandomItem = <T>( list:T[], weight:number[] ) : T => 
 {
   let total_weight = weight.reduce( ( prev, cur, i, arr ) => prev + cur )
     

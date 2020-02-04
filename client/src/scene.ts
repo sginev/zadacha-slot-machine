@@ -150,7 +150,7 @@ class MainScene extends Phaser.Scene
     
     range( 3 ).forEach( i => this.tweens.add( {
         targets : this.state.reelRows,
-        [i] : { start: this.state.reelRows[i] % 5, to: 500 + nextRows[i] },
+        [i] : { start: this.state.reelRows[i] % 5, to: 500 + 5 - nextRows[i] },
         duration: MAX_DURATION + ( i - 2 ) * STEP,
         ease: 'Cubic.easeInOut',
     } ) )

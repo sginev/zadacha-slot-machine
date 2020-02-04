@@ -1,7 +1,10 @@
 import * as Phaser from "phaser"
+import BackendService from "./backend"
 
 class MainScene extends Phaser.Scene 
 {
+  private backend = new BackendService()
+
   private state = new class 
   {
     coins:number = 0
@@ -86,7 +89,7 @@ class MainScene extends Phaser.Scene
     //// UI
 
     this.sprites.ui.coins = this.add.text( 10, 10, '--', { 
-      fontSize: 48,
+      fontSize: 64,
       fontFamily: 'calibri', 
       fontWeight: 'bolder',
       color : 'black' 
@@ -96,6 +99,10 @@ class MainScene extends Phaser.Scene
     this.state.reelRows[ '0' ] = ~~( Math.random() * 5 )
     this.state.reelRows[ '1' ] = ~~( Math.random() * 5 )
     this.state.reelRows[ '2' ] = ~~( Math.random() * 5 )
+
+    this.backend.init().then( data => {
+      this.state.coins = data.user.coins
+    } )
   }
 
   update() 
@@ -123,6 +130,8 @@ class MainScene extends Phaser.Scene
   pull() 
   {
     this.sprites.lever.play( 'pull' )
+
+    this.backend.spin().then( data => console.log( data ) )
 
     const nextRows = [ 
       ~~( Math.random() * 5 ) , 

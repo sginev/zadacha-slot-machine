@@ -1,9 +1,10 @@
 import * as Phaser from "phaser"
+import CONFIG from "./configuration.json"
 import BackendService from "./backend"
 
 class MainScene extends Phaser.Scene 
 {
-  private backend = new BackendService()
+  private backend = new BackendService( CONFIG.urlBase )
 
   private state = new class 
   {
@@ -170,19 +171,6 @@ class MainScene extends Phaser.Scene
     value 
       ? this.input.enable( this.sprites.lever )
       : this.input.disable( this.sprites.lever )
-  }
-
-  ____debug____SetDraggable( target:Phaser.GameObjects.GameObject ) 
-  {
-    target.setInteractive()
-    this.input.setDraggable( target )
-    this.input.on('dragstart', function (pointer, gameObject) { gameObject.setTint(0xff0000); })
-    this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-        gameObject.x = dragX;
-        gameObject.y = dragY;
-        console.log( dragX - this.cameras.main.centerX, dragY - this.cameras.main.centerY )
-    })
-    this.input.on('dragend', function (pointer, gameObject) { gameObject.clearTint() })
   }
 }
 

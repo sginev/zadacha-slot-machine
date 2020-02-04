@@ -1,10 +1,10 @@
-const URL_BASE = "https://3000-f44035af-2256-4fb9-a8e3-4045fddf5dc6.ws-eu01.gitpod.io"
-
 export default class BackendService
 {
+  constructor ( private urlBase:string ) {}
+
   private async get( endpoint:string ) 
   {
-    const response = await fetch( URL_BASE + endpoint, { 
+    const response = await fetch( this.urlBase + endpoint, { 
       headers: { 'Accept': 'application/json' },
       credentials: 'include',
     } )

@@ -6,7 +6,3 @@
 * For the client - the backend url is defined in `client/src/configuration.json`
 * For the server - the port is defined in `server/src/settings-server.json`
 * For the slot reward chances - the weights are defined in `server/src/settings-slots.json`
-
-### Task Preview
-
-[![Preview-GIF](https://sginev.github.io/zadacha-slot-machine/preview.gif)](https://sginev.github.io/zadacha-slot-machine/preview.gif)

@@ -3,8 +3,6 @@ import SLOTS from "./settings-slots.json"
 type MatchType = 'trio' | 'pair' | 'none'
 
 interface SymbolData {
-  name : string
-  icon : string
   weight : number
   reward : SpinReward
   index? : number

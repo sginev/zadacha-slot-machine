@@ -1,3 +1,11 @@
 tasks:
-  - init: npm i
-    command: npm start
+  - name: Run Client
+    init: npm i --prefix ./client
+    command: npm run --prefix ./client start
+    openIn: right
+    openMode: split-bottom
+  - name: Run Server
+    init: npm i --prefix ./server
+    command: npm run --prefix ./server start
+    openIn: right
+    openMode: split-top

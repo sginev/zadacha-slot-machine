@@ -2,10 +2,12 @@ tasks:
   - name: Run Client
     init: npm i --prefix ./client
     command: npm run --prefix ./client start
-    openIn: right
-    openMode: split-bottom
+    openMode: split-right
   - name: Run Server
     init: npm i --prefix ./server
     command: npm run --prefix ./server start
+    openMode: split-right
+  - name: UNGIT
+    init: npm i -g ungit
+    command: ungit
     openIn: right
-    openMode: split-top

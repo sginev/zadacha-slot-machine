@@ -1,5 +1,5 @@
 import * as Phaser from "phaser"
-import CONFIG from "./configuration.json"
+import * as CONFIG from "./configuration.json"
 import BackendService from "./backend"
 
 const SYMBOLS_COUNT = 5

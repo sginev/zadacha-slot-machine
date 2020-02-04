@@ -44,7 +44,7 @@ class MainScene extends Phaser.Scene
     range( 5 ).forEach( i => this.load.image( 'symbol_' + i, `assets/symbols/icon_${ i + 1 }.png` ) )
   }
 
-  create() : void 
+  async create() 
   {
     const center = {
       x : this.cameras.main.centerX, 
@@ -82,9 +82,7 @@ class MainScene extends Phaser.Scene
     } )
     this.sprites.lever = this.add.sprite( center.x + 330, center.y - 50, 'lever_0' )
     this.sprites.lever.setInteractive( { useHandCursor: true  } )
-    this.sprites.lever.on('pointerdown', pointer => this.pull() )
-    this.sprites.lever.on('pointerout', function (pointer) { this.clearTint() } )
-    this.sprites.lever.on('pointerup', function (pointer) { this.clearTint() } )
+    this.sprites.lever.on( 'pointerdown', async pointer => this.pull() )
 
     //// UI
 
@@ -100,9 +98,9 @@ class MainScene extends Phaser.Scene
     this.state.reelRows[ '1' ] = ~~( Math.random() * 5 )
     this.state.reelRows[ '2' ] = ~~( Math.random() * 5 )
 
-    this.backend.init().then( data => {
-      this.state.coins = data.user.coins
-    } )
+    const data = await this.backend.init()
+    
+    this.state.coins = data.user.coins
   }
 
   update() 
@@ -127,7 +125,7 @@ class MainScene extends Phaser.Scene
     this.sprites.reels.symbolStrips[ reel_index ].y = row * delta
   }
 
-  pull() 
+  async pull() 
   {
     this.sprites.lever.play( 'pull' )
 
@@ -142,8 +140,8 @@ class MainScene extends Phaser.Scene
 
     //// THE ANIMATION
 
-    const MAX_DURATION = 2500
-    const STEP = 250
+    const MAX_DURATION = 3000
+    const STEP = 400
     
     this.tweens.killTweensOf( this.state.reelRows )
     
@@ -154,12 +152,15 @@ class MainScene extends Phaser.Scene
         ease: 'Cubic.easeInOut',
     } ) )
 
+    ////
+
     this.setMachineEnabled( false )
-    setTimeout( () => {
-      this.setMachineEnabled( true )
-      this.tweens.killTweensOf( this.state )
-      this.tweens.add( { targets : this.state, 'coins' : nextCoins, duration : 800 } )
-    }, MAX_DURATION + 100 )
+
+    await delay( MAX_DURATION + 100 )
+    
+    this.setMachineEnabled( true )
+    this.tweens.killTweensOf( this.state )
+    this.tweens.add( { targets : this.state, 'coins' : nextCoins, duration : 800 } )
   }
 
   setMachineEnabled( value:boolean ) {
@@ -183,5 +184,7 @@ class MainScene extends Phaser.Scene
 }
 
 const range = length => [ ...Array( length ).keys() ]
+
+const delay = async time => await new Promise( resolve => setTimeout( resolve, time ) )
 
 export default MainScene

@@ -10,6 +10,7 @@
         "build:live": "nodemon --watch '*.ts' --watch '*.json' --exec 'ts-node' src/server.ts"
     },
     "dependencies": {
+        "cors": "^2.8.5",
         "express": "^4.17.1",
         "express-session": "^1.17.0"
     },

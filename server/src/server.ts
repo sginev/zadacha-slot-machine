@@ -1,11 +1,18 @@
 import SETTINGS_SERVER from "./settings-server.json"
 import SETTINGS_SLOTS from "./settings-slots.json"
 import express from "express"
-import slots from "./slots"
 import session from "express-session"
+import cors from "cors"
+import slots from "./slots"
 
 const app = express()
 
+class UserData {
+  spins = 0
+  constructor ( public coins : number ) {}
+}
+
+app.use( cors() )
 app.use( session( {
   secret: SETTINGS_SLOTS.user.session.secret,
   cookie: { maxAge: SETTINGS_SLOTS.user.session.cookieMaxAge },
@@ -19,11 +26,6 @@ app.use( ( req, res ) => {
   }
   req.next()
 } )
-
-class UserData {
-  spins = 0
-  constructor ( public coins : number ) {}
-}
 
 app.get( "/init", ( req, res ) => {
   res.json( { 
@@ -41,7 +43,7 @@ app.get( "/spin", ( req, res ) => {
   if ( result.reward )
     user.coins += result.reward.coins
 
-  res.json( { ...result , user } )
+  res.json( { result , user } )
 } )
 
 const PORT = process.env.PORT || SETTINGS_SERVER.port

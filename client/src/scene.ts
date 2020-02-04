@@ -5,7 +5,11 @@ class MainScene extends Phaser.Scene
   private state = new class 
   {
     coins:number = 0
-    reelRows:[number,number,number] = [ 0, 0, 0 ]
+    reelRows = {
+      '0' : 0 ,
+      '1' : 0 ,
+      '2' : 0 ,
+    }    
   }
 
   private sprites = new class 
@@ -59,7 +63,7 @@ class MainScene extends Phaser.Scene
     } )
 
     //// MACHINE
-    //this.sprites.background = this.add.sprite( center.x, center.y, "background" )
+    this.sprites.background = this.add.sprite( center.x, center.y, "background" )
 
     //// LEVER
     this.anims.create( {
@@ -74,11 +78,18 @@ class MainScene extends Phaser.Scene
     this.sprites.lever.on('pointerdown', pointer => this.pull() )
     this.sprites.lever.on('pointerout', function (pointer) { this.clearTint() } )
     this.sprites.lever.on('pointerup', function (pointer) { this.clearTint() } )
+
+    //// randomize initial state
+    this.state.reelRows[ '0' ] = ~~( Math.random() * 5 )
+    this.state.reelRows[ '1' ] = ~~( Math.random() * 5 )
+    this.state.reelRows[ '2' ] = ~~( Math.random() * 5 )
   }
 
   update() 
   {
-    
+    this.setReelRow( 0, this.state.reelRows[ '0' ] )
+    this.setReelRow( 1, this.state.reelRows[ '1' ] )
+    this.setReelRow( 2, this.state.reelRows[ '2' ] )
   }
 
   setReelRow( reel_index:number, row:number ) 
@@ -97,9 +108,34 @@ class MainScene extends Phaser.Scene
   {
     this.sprites.lever.play( 'pull' )
 
-    this.setReelRow( 0, ~~( Math.random() * 50 ) )
-    this.setReelRow( 1, ~~( Math.random() * 50 ) )
-    this.setReelRow( 2, ~~( Math.random() * 50 ) )
+    const nextRows = [ 
+      ~~( Math.random() * 5 ) , 
+      ~~( Math.random() * 5 ) , 
+      ~~( Math.random() * 5 ) , 
+    ]
+
+    //// THE ANIMATION
+
+    const MAX_DURATION = 2500
+    const STEP = 250
+    
+    this.tweens.killTweensOf( this.state.reelRows )
+    
+    range( 3 ).forEach( i => this.tweens.add( {
+        targets : this.state.reelRows,
+        [i] : { start: this.state.reelRows[i] % 5, to: 500 + nextRows[i] },
+        duration: MAX_DURATION - i * STEP,
+        ease: 'Cubic.easeInOut',
+    } ) )
+
+    this.setMachineEnabled( false )
+    setTimeout( () => this.setMachineEnabled( true ), MAX_DURATION + 100 )
+  }
+
+  setMachineEnabled( value:boolean ) {
+    value 
+      ? this.input.enable( this.sprites.lever )
+      : this.input.disable( this.sprites.lever )
   }
 
   ____debug____SetDraggable( target:Phaser.GameObjects.GameObject ) 

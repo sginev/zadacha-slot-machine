@@ -15,13 +15,17 @@ class MainScene extends Phaser.Scene
   private sprites = new class 
   {
     background:Phaser.GameObjects.Sprite
+    lever:Phaser.GameObjects.Sprite
     reels = new class 
     {
       container:Phaser.GameObjects.Container
       background:Phaser.GameObjects.Sprite
       symbolStrips:[Phaser.GameObjects.Container,Phaser.GameObjects.Container,Phaser.GameObjects.Container]
     }
-    lever:Phaser.GameObjects.Sprite
+    ui = new class
+    {
+      coins:Phaser.GameObjects.Text
+    }
   }
 
   constructor() 
@@ -79,6 +83,15 @@ class MainScene extends Phaser.Scene
     this.sprites.lever.on('pointerout', function (pointer) { this.clearTint() } )
     this.sprites.lever.on('pointerup', function (pointer) { this.clearTint() } )
 
+    //// UI
+
+    this.sprites.ui.coins = this.add.text( 10, 10, '--', { 
+      fontSize: 48,
+      fontFamily: 'calibri', 
+      fontWeight: 'bolder',
+      color : 'black' 
+    } )
+
     //// randomize initial state
     this.state.reelRows[ '0' ] = ~~( Math.random() * 5 )
     this.state.reelRows[ '1' ] = ~~( Math.random() * 5 )
@@ -90,6 +103,9 @@ class MainScene extends Phaser.Scene
     this.setReelRow( 0, this.state.reelRows[ '0' ] )
     this.setReelRow( 1, this.state.reelRows[ '1' ] )
     this.setReelRow( 2, this.state.reelRows[ '2' ] )
+
+    const coinsText = `($) ${ ~~this.state.coins }`
+    this.sprites.ui.coins.setText( coinsText )
   }
 
   setReelRow( reel_index:number, row:number ) 
@@ -113,6 +129,7 @@ class MainScene extends Phaser.Scene
       ~~( Math.random() * 5 ) , 
       ~~( Math.random() * 5 ) , 
     ]
+    const nextCoins = ~~( Math.random() * 1000 )
 
     //// THE ANIMATION
 
@@ -124,12 +141,16 @@ class MainScene extends Phaser.Scene
     range( 3 ).forEach( i => this.tweens.add( {
         targets : this.state.reelRows,
         [i] : { start: this.state.reelRows[i] % 5, to: 500 + nextRows[i] },
-        duration: MAX_DURATION - i * STEP,
+        duration: MAX_DURATION + ( i - 2 ) * STEP,
         ease: 'Cubic.easeInOut',
     } ) )
 
     this.setMachineEnabled( false )
-    setTimeout( () => this.setMachineEnabled( true ), MAX_DURATION + 100 )
+    setTimeout( () => {
+      this.setMachineEnabled( true )
+      this.tweens.killTweensOf( this.state )
+      this.tweens.add( { targets : this.state, 'coins' : nextCoins, duration : 800 } )
+    }, MAX_DURATION + 100 )
   }
 
   setMachineEnabled( value:boolean ) {

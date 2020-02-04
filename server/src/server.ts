@@ -12,7 +12,13 @@ class UserData {
   constructor ( public coins : number ) {}
 }
 
-app.use( cors() )
+//// This is a cheat to allow all origins with credentials=include
+app.use( cors( {
+  origin: ( origin, callback ) => callback( null, true ),
+  optionsSuccessStatus: 200,
+  credentials: true
+} ) )
+
 app.use( session( {
   secret: SETTINGS_SLOTS.user.session.secret,
   cookie: { maxAge: SETTINGS_SLOTS.user.session.cookieMaxAge },
@@ -20,11 +26,10 @@ app.use( session( {
   resave: false ,
 } ) )
 
-app.use( ( req, res ) => {
-  if ( ! req.session.user ) {
+app.use( ( req, res, next ) => {
+  if ( ! req.session.user )
     req.session.user = new UserData( SETTINGS_SLOTS.user.initialCoins )
-  }
-  req.next()
+  next()
 } )
 
 app.get( "/init", ( req, res ) => {

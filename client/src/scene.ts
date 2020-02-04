@@ -2,6 +2,9 @@ import * as Phaser from "phaser"
 import CONFIG from "./configuration.json"
 import BackendService from "./backend"
 
+const SYMBOLS_COUNT = 5
+const SYMBOLS_DELTA = 110
+
 class MainScene extends Phaser.Scene 
 {
   private backend = new BackendService( CONFIG.urlBase )
@@ -62,8 +65,8 @@ class MainScene extends Phaser.Scene
       this.add.container(  140, 0 ) ,
     ]
     this.sprites.reels.symbolStrips.forEach( reel => {
-      const count = 5
-      const delta = 110
+      const count = SYMBOLS_COUNT
+      const delta = SYMBOLS_DELTA
       reel.add( range( count ).map( i => this.add.image( 0, delta * i, 'symbol_' + i ) ) )
       reel.add( range( count ).map( i => this.add.image( 0, delta * ( i - count ), 'symbol_' + i ) ) )
       reel.add( range( count ).map( i => this.add.image( 0, delta * ( i - count - count ), 'symbol_' + i ) ) )      
@@ -95,9 +98,9 @@ class MainScene extends Phaser.Scene
     } )
 
     //// randomize initial state
-    this.state.reelRows[ '0' ] = ~~( Math.random() * 5 )
-    this.state.reelRows[ '1' ] = ~~( Math.random() * 5 )
-    this.state.reelRows[ '2' ] = ~~( Math.random() * 5 )
+    this.state.reelRows[ '0' ] = ~~( Math.random() * SYMBOLS_COUNT )
+    this.state.reelRows[ '1' ] = ~~( Math.random() * SYMBOLS_COUNT )
+    this.state.reelRows[ '2' ] = ~~( Math.random() * SYMBOLS_COUNT )
 
     const data = await this.backend.init()
     
@@ -116,8 +119,8 @@ class MainScene extends Phaser.Scene
 
   setReelRow( reel_index:number, row:number ) 
   {
-    const count = 5
-    const delta = 110
+    const count = SYMBOLS_COUNT
+    const delta = SYMBOLS_DELTA
 
     /// Normalize row to between 0 and 5
     while ( row > count ) row -= count
@@ -131,8 +134,6 @@ class MainScene extends Phaser.Scene
     this.sprites.lever.play( 'pull' )    
 
     const data = await this.backend.spin()
-
-    console.log( data )
 
     const nextRows = data.result.symbols
     const nextCoins = data.user.coins
@@ -151,7 +152,10 @@ class MainScene extends Phaser.Scene
     
     range( 3 ).forEach( i => this.tweens.add( {
         targets : this.state.reelRows,
-        [i] : { start: this.state.reelRows[i] % 5, to: 500 + 5 - nextRows[i] },
+        [i] : { 
+          start: this.state.reelRows[i] % SYMBOLS_COUNT, 
+          to: 500 + SYMBOLS_COUNT - nextRows[i] 
+        },
         duration: MAX_DURATION + ( i - 2 ) * STEP,
         ease: 'Cubic.easeInOut',
     } ) )

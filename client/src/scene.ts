@@ -127,16 +127,19 @@ class MainScene extends Phaser.Scene
 
   async pull() 
   {
-    this.sprites.lever.play( 'pull' )
+    this.sprites.lever.play( 'pull' )    
 
-    this.backend.spin().then( data => console.log( data ) )
+    const data = await this.backend.spin()
 
-    const nextRows = [ 
-      ~~( Math.random() * 5 ) , 
-      ~~( Math.random() * 5 ) , 
-      ~~( Math.random() * 5 ) , 
-    ]
-    const nextCoins = ~~( Math.random() * 1000 )
+    console.log( data )
+
+    const nextRows = data.result.symbols
+    const nextCoins = data.user.coins
+
+    //// VISUALIZE PAYMENT
+    
+    this.tweens.killTweensOf( this.state )
+    this.state.coins -= 1
 
     //// THE ANIMATION
 
